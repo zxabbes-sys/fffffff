@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى ألطف فاطمة 💕</title>
+    <title>إلى حسون الغالي 💙✨</title>
+    
+    <!-- Three.js Library for 3D Visuals -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -13,128 +19,165 @@
             padding: 0;
             font-family: 'Tajawal', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
-        body {
-            background: linear-gradient(135deg, #1e1b4b 0%, #31103f 50%, #1e1b4b 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        body, html {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            position: relative;
+            background-color: #030712;
             color: #ffffff;
         }
 
-        /* خلفية فقاعات وقلوب متحركة */
-        .bg-bubbles {
-            position: absolute;
+        /* 3D Canvas Background */
+        #webgl-container {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
-            overflow: hidden;
             pointer-events: none;
         }
 
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            background: rgba(255, 182, 193, 0.15);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: rise 12s infinite ease-in-out;
-        }
-
-        @keyframes rise {
-            0% { transform: translateY(0) scale(0.8); opacity: 0; }
-            50% { opacity: 0.6; }
-            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
-        }
-
-        /* كارت العرض */
-        .card-container {
+        /* Glassmorphism Card Container */
+        .main-wrapper {
             position: relative;
             z-index: 10;
-            width: 90%;
-            max-width: 440px;
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 30px;
-            padding: 35px 25px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(236, 72, 153, 0.2);
-            transition: all 0.5s ease;
-        }
-
-        .avatar-box {
-            position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 20px;
-        }
-
-        .avatar-img {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #f43f5e, #ec4899);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 50px;
-            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
-            animation: pulseAvatar 2s infinite alternate;
+            padding: 20px;
         }
 
-        @keyframes pulseAvatar {
-            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4); }
-            100% { transform: scale(1.06); box-shadow: 0 15px 35px rgba(236, 72, 153, 0.7); }
+        .card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 32px;
+            padding: 40px 28px 32px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7),
+                        0 0 40px rgba(59, 130, 246, 0.25);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .heart-badge {
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.05),
+                transparent
+            );
+            transform: skewX(-15deg);
+            animation: shine 8s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        /* Floating Avatar Sphere Glow */
+        .avatar-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 24px;
+        }
+
+        .avatar-bg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 52px;
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.6);
+            animation: floatAnim 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatAnim {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-8px) scale(1.05); }
+        }
+
+        .badge {
             position: absolute;
             bottom: 2px;
             right: 2px;
             background: #ffffff;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            animation: pulseBadge 1.5s infinite alternate;
         }
 
-        .step-content {
-            min-height: 180px;
+        @keyframes pulseBadge {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* Content Transitions */
+        .content-box {
+            min-height: 190px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .content-box.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
         }
 
         .title {
-            font-size: 24px;
+            font-size: 25px;
             font-weight: 800;
-            color: #fce7f3;
-            margin-bottom: 12px;
-            text-shadow: 0 2px 10px rgba(236, 72, 153, 0.3);
+            background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 14px;
+            line-height: 1.3;
         }
 
         .message {
             font-size: 17px;
-            line-height: 1.7;
-            color: #f3e8ff;
+            line-height: 1.8;
+            color: #e2e8f0;
             font-weight: 500;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
+            padding: 0 5px;
         }
 
+        /* Action Buttons */
         .btn-group {
             display: flex;
             gap: 12px;
@@ -144,132 +187,284 @@
         }
 
         .btn {
-            background: linear-gradient(45deg, #ec4899, #8b5cf6);
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             color: white;
             border: none;
-            padding: 14px 28px;
+            padding: 15px 30px;
             font-size: 16px;
             font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             width: 100%;
-            max-width: 220px;
+            max-width: 240px;
+            outline: none;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 25px rgba(236, 72, 153, 0.5);
+        .btn:hover, .btn:active {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 30px -5px rgba(139, 92, 246, 0.6);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fce7f3;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: none;
         }
 
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Progress Dots */
         .dots-container {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 25px;
+            margin-top: 28px;
         }
 
         .dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.25);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.4s ease;
         }
 
         .dot.active {
-            width: 24px;
+            width: 28px;
             border-radius: 10px;
-            background: #ec4899;
-            box-shadow: 0 0 10px #ec4899;
+            background: #60a5fa;
+            box-shadow: 0 0 12px #60a5fa;
         }
 
+        /* Counter Styling */
         .love-counter {
-            font-size: 38px;
-            font-weight: 800;
-            background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #60a5fa, #c084fc, #f472b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 15px 0;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-bubbles" id="bubbles"></div>
+    <!-- 3D Canvas Background -->
+    <div id="webgl-container"></div>
 
-    <div class="card-container">
-        <div class="avatar-box">
-            <div class="avatar-img" id="avatarEmoji">🧸</div>
-            <div class="heart-badge">💖</div>
+    <!-- UI Card Container -->
+    <div class="main-wrapper">
+        <div class="card">
+            <div class="avatar-wrapper">
+                <div class="avatar-bg" id="avatarEmoji">👑</div>
+                <div class="badge" id="badgeEmoji">💙</div>
+            </div>
+
+            <div class="content-box" id="contentBox"></div>
+            <div class="dots-container" id="dotsContainer"></div>
         </div>
-
-        <div class="step-content" id="stepContent"></div>
-        <div class="dots-container" id="dotsContainer"></div>
     </div>
 
     <script>
-        const bubblesContainer = document.getElementById('bubbles');
-        for (let i = 0; i < 15; i++) {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            const size = Math.random() * 60 + 20;
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
-            bubble.style.left = `${Math.random() * 100}%`;
-            bubble.style.animationDuration = `${Math.random() * 8 + 6}s`;
-            bubble.style.animationDelay = `${Math.random() * 4}s`;
-            bubblesContainer.appendChild(bubble);
+        // =========================================================
+        // 1. THREE.JS 3D BACKGROUND SCENE SETUP
+        // =========================================================
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x030712, 0.02);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 25;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+
+        const pointLight1 = new THREE.PointLight(0x3b82f6, 3, 50);
+        pointLight1.position.set(10, 10, 10);
+        scene.add(pointLight1);
+
+        const pointLight2 = new THREE.PointLight(0xec4899, 3, 50);
+        pointLight2.position.set(-10, -10, -10);
+        scene.add(pointLight2);
+
+        // Create Floating 3D Geometries (Hearts / Spheres / Torus Stars)
+        const floatingObjects = [];
+        const geometries = [
+            new THREE.IcosahedronGeometry(1.2, 0),
+            new THREE.TorusGeometry(1, 0.3, 16, 100),
+            new THREE.OctahedronGeometry(1.4, 0),
+            new THREE.SphereGeometry(1, 16, 16)
+        ];
+
+        const materials = [
+            new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.2, metalness: 0.8 }),
+            new THREE.MeshStandardMaterial({ color: 0x8b5cf6, roughness: 0.3, metalness: 0.7 }),
+            new THREE.MeshStandardMaterial({ color: 0xec4899, roughness: 0.2, metalness: 0.9 }),
+            new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.1, metalness: 0.5 })
+        ];
+
+        // Heart Shape 3D Generator
+        function createHeartMesh() {
+            const shape = new THREE.Shape();
+            const x = 0, y = 0;
+            shape.moveTo(x + 0.25, y + 0.25);
+            shape.bezierCurveTo(x + 0.25, y + 0.25, x + 0.2, y, x, y);
+            shape.bezierCurveTo(x - 0.3, y, x - 0.3, y + 0.35, x - 0.3, y + 0.35);
+            shape.bezierCurveTo(x - 0.3, y + 0.55, x - 0.1, y + 0.77, x + 0.25, y + 0.95);
+            shape.bezierCurveTo(x + 0.6, y + 0.77, x + 0.8, y + 0.55, x + 0.8, y + 0.35);
+            shape.bezierCurveTo(x + 0.8, y + 0.35, x + 0.8, y, x + 0.5, y);
+            shape.bezierCurveTo(x + 0.35, y, x + 0.25, y + 0.25, x + 0.25, y + 0.25);
+
+            const extrudeSettings = { depth: 0.2, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.1, bevelThickness: 0.1 };
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            geometry.center();
+            return geometry;
         }
 
+        const heartGeometry = createHeartMesh();
+
+        // Spawn Floating Items
+        for (let i = 0; i < 40; i++) {
+            const isHeart = Math.random() > 0.4;
+            const geom = isHeart ? heartGeometry : geometries[Math.floor(Math.random() * geometries.length)];
+            const mat = materials[Math.floor(Math.random() * materials.length)];
+            const mesh = new THREE.Mesh(geom, mat);
+
+            mesh.position.x = (Math.random() - 0.5) * 50;
+            mesh.position.y = (Math.random() - 0.5) * 50;
+            mesh.position.z = (Math.random() - 0.5) * 30;
+
+            const scale = Math.random() * 0.8 + 0.5;
+            mesh.scale.set(scale, scale, scale);
+
+            mesh.rotation.x = Math.random() * Math.PI;
+            mesh.rotation.y = Math.random() * Math.PI;
+
+            mesh.userData = {
+                rotSpeedX: (Math.random() - 0.5) * 0.02,
+                rotSpeedY: (Math.random() - 0.5) * 0.02,
+                floatSpeed: Math.random() * 0.01 + 0.005,
+                initialY: mesh.position.y
+            };
+
+            scene.add(mesh);
+            floatingObjects.push(mesh);
+        }
+
+        // Particle System Background
+        const particleCount = 200;
+        const particleGeo = new THREE.BufferGeometry();
+        const particleCoords = new Float32Array(particleCount * 3);
+
+        for(let i=0; i<particleCount*3; i+=3) {
+            particleCoords[i] = (Math.random() - 0.5) * 60;
+            particleCoords[i+1] = (Math.random() - 0.5) * 60;
+            particleCoords[i+2] = (Math.random() - 0.5) * 40;
+        }
+
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particleCoords, 3));
+        const particleMat = new THREE.PointsMaterial({
+            size: 0.15,
+            color: 0x60a5fa,
+            transparent: true,
+            opacity: 0.6
+        });
+        const particleSystem = new THREE.Points(particleGeo, particleMat);
+        scene.add(particleSystem);
+
+        // Render Loop
+        let clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            floatingObjects.forEach(obj => {
+                obj.rotation.x += obj.userData.rotSpeedX;
+                obj.rotation.y += obj.userData.rotSpeedY;
+                obj.position.y = obj.userData.initialY + Math.sin(elapsedTime * 1.5 + obj.position.x) * 1.2;
+            });
+
+            particleSystem.rotation.y = elapsedTime * 0.02;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        // =========================================================
+        // 2. INTERACTIVE STORY STEPS DATA (HASSOON VERSION)
+        // =========================================================
         const steps = [
             {
-                emoji: "💖",
-                title: "هلوو يا أحلى فاطمة ✨",
-                message: "عندي رسالة صغيرة وخاصة إلك.. تتوقعين شنو هي؟ 🙈",
-                btnText: "شنو هي؟ 🥺"
+                emoji: "👑",
+                badge: "💙",
+                title: "هلوو بالضلع حسون ✨",
+                message: "عندي رسالة خاصة وإلك وحدك.. تدري شنو هي لو أقول لك مباشرة؟ 🙈🔥",
+                btnText: "شنو هي؟ احكي! 🥺"
             },
             {
-                emoji: "⚖️💕",
-                title: "يا ألطف محامية بالدنيا 🌸",
-                message: "أن الحياة من محاسن صُدفها أهدتني شخصاً حنوناً وجميلاً بجمالكِ، ويا بختي بقلبكِ الطيب والرقيق.. 👑",
-                btnText: "التالي 💕"
+                emoji: "💙💎",
+                badge: "✨",
+                title: "يا أطلق وأعز صديق بالدنيا ⚡",
+                message: "الحياة حلوة بوجودك، وأنت مو بس صديق.. أنت أخ وسند وماكو منك اثنين بأصلك وطيبة قلبك! 👑👑",
+                btnText: "حبيبي تدلل 💕"
             },
             {
-                emoji: "🥺🌸",
-                title: "سؤال صريح فاطمتي..",
-                message: "معقولة فطومتي تحبيني مثل ما أني أحبها ومكتفي بيها؟ 🙈❤️",
-                btnText: "اي أكيد أحبك! 💖",
-                altBtnText: "ممم.. يمكن 😜"
+                emoji: "🥺🔥",
+                badge: "💖",
+                title: "سؤال صريح حسوني..",
+                message: "معقولة حسون الضلع يعزني ويحبني مثل ما أني أعتبره أغلى إنسان بصحبتي ودنيتي؟ 🙈❤️",
+                btnText: "أي أكيد معزتك بقلبي! 💙",
+                altBtnText: "ممم.. يمكن أسبوع طالع! 😜"
             },
             {
-                emoji: "🥰✨",
-                title: "وأني أحبكِ أكثر وأكثر! ❤️",
-                message: "بس تعرفين شكد؟ لو تدرين شكد أحب حنيتكِ وطيبة قلبكِ جان عرفتي أنكِ أجمل شيء بصحبتي ودنيتي كلها.. 👑✨",
-                btnText: "شكد تحبني؟ 🤔"
+                emoji: "🥰⚡",
+                badge: "👑",
+                title: "وأني أعزك وأعشق صحبتك أكيد! ❤️",
+                message: "لو تدري شكد وجودك بالدنيا يغير الجو وينطي طاقة إيجابية.. جان عرفت أنك مكسب لأي شخص يعرفك! 👑✨",
+                btnText: "شكد تحبني وتغليني؟ 🤔"
             },
             {
-                emoji: "👑❤️",
-                title: "فاطمة أنتِ الحنية كُلها!",
-                message: "أحبكِ قد الكون والسموات وزايد! أنتِ المحامية الوحيدة اللي ملكت قلبي وعقلي بدون أي منازع.. ⚖️💖",
-                btnText: "شوف النسبة 😍"
+                emoji: "💎💙",
+                badge: "🚀",
+                title: "حسون أنت الأصل كله!",
+                message: "معزتك وحبي إلك قد السلسلة الكونية وزايد! أحسن وأوفى صديق بالدنيا كلها بدون منازع 👑🔥",
+                btnText: "شوف نسبة غلاك 😍"
             },
             {
-                emoji: "👩‍⚖️💖",
-                title: "نسبة حبي إلكِ يا أحلى فاطمة:",
+                emoji: "👑💙",
+                badge: "🏆",
+                title: "نسبة غلاك وحبي إلك يا حسون:",
                 isFinal: true
             }
         ];
 
         let currentStep = 0;
 
+        // Render Dots Progress
         function renderDots() {
             const container = document.getElementById('dotsContainer');
             container.innerHTML = '';
@@ -280,42 +475,52 @@
             });
         }
 
+        // Show Current Step
         function showStep(index) {
             const step = steps[index];
-            const contentBox = document.getElementById('stepContent');
+            const contentBox = document.getElementById('contentBox');
             const avatarEmoji = document.getElementById('avatarEmoji');
+            const badgeEmoji = document.getElementById('badgeEmoji');
 
-            avatarEmoji.textContent = step.emoji;
+            contentBox.classList.add('fade-out');
 
-            if (step.isFinal) {
-                contentBox.innerHTML = `
-                    <div class="title">${step.title}</div>
-                    <div class="love-counter" id="counter">0%</div>
-                    <div class="message" style="margin-bottom:15px;">أحبكِ لا نهائي فطومتي الحنونة 🌸💖</div>
-                    <div class="btn-group">
-                        <button class="btn" onclick="restart()">إعادة الرسالة 🔄</button>
-                    </div>
-                `;
-                animateCounter();
-            } else if (step.altBtnText) {
-                contentBox.innerHTML = `
-                    <div class="title">${step.title}</div>
-                    <div class="message">${step.message}</div>
-                    <div class="btn-group">
-                        <button class="btn" onclick="nextStep()">${step.btnText}</button>
-                        <button class="btn btn-secondary" onclick="nextStep()">${step.altBtnText}</button>
-                    </div>
-                `;
-            } else {
-                contentBox.innerHTML = `
-                    <div class="title">${step.title}</div>
-                    <div class="message">${step.message}</div>
-                    <div class="btn-group">
-                        <button class="btn" onclick="nextStep()">${step.btnText}</button>
-                    </div>
-                `;
-            }
-            renderDots();
+            setTimeout(() => {
+                avatarEmoji.textContent = step.emoji;
+                badgeEmoji.textContent = step.badge;
+
+                if (step.isFinal) {
+                    contentBox.innerHTML = `
+                        <div class="title">${step.title}</div>
+                        <div class="love-counter" id="counter">0%</div>
+                        <div class="message" style="margin-bottom:18px;">معزتك لا نهائية يا حسوني الغالي 💙👑</div>
+                        <div class="btn-group">
+                            <button class="btn" onclick="restart()">إعادة الرسالة 🔄</button>
+                        </div>
+                    `;
+                    animateCounter();
+                    triggerConfetti();
+                } else if (step.altBtnText) {
+                    contentBox.innerHTML = `
+                        <div class="title">${step.title}</div>
+                        <div class="message">${step.message}</div>
+                        <div class="btn-group">
+                            <button class="btn" onclick="nextStep()">${step.btnText}</button>
+                            <button class="btn btn-secondary" onclick="nextStep()">${step.altBtnText}</button>
+                        </div>
+                    `;
+                } else {
+                    contentBox.innerHTML = `
+                        <div class="title">${step.title}</div>
+                        <div class="message">${step.message}</div>
+                        <div class="btn-group">
+                            <button class="btn" onclick="nextStep()">${step.btnText}</button>
+                        </div>
+                    `;
+                }
+
+                contentBox.classList.remove('fade-out');
+                renderDots();
+            }, 300);
         }
 
         function nextStep() {
@@ -330,12 +535,13 @@
             showStep(currentStep);
         }
 
+        // Counter Animation
         function animateCounter() {
             let count = 0;
             const target = 1000000;
             const counterEl = document.getElementById('counter');
             const timer = setInterval(() => {
-                count += 25000;
+                count += 28000;
                 if (count >= target) {
                     counterEl.textContent = "1,000,000% ∞";
                     clearInterval(timer);
@@ -345,6 +551,25 @@
             }, 30);
         }
 
+        // Confetti Celebration
+        function triggerConfetti() {
+            const count = 200;
+            const defaults = { origin: { y: 0.7 } };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55, colors: ['#3b82f6', '#60a5fa'] });
+            fire(0.2, { spread: 60, colors: ['#8b5cf6', '#a78bfa'] });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8, colors: ['#ec4899', '#38bdf8'] });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+
+        // Initialize First View
         showStep(0);
     </script>
 </body>
